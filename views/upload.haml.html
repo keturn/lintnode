@@ -1,0 +1,11 @@
+%h1 Upload
+
+%form{ method: 'post', enctype: 'multipart/form-data', action: '/jslint' }
+  %input{ type: 'file', name: 'source' }
+  %input{ type: 'submit', value: 'Upload' }
+
+%h2 Paste
+
+%form{ method: 'post', enctype: 'multipart/form-data', action: '/jslint' }
+  %textarea{ name: 'source' }
+  %input{ type: 'submit', value: 'Upload' }

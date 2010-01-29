@@ -1,0 +1,18 @@
+lintnode - a JSLint server for more expedient linting
+
+I was setting up flymake-mode with jslint[1], and thinking it was
+pretty great, but that rhino start-up cost is pretty big for a flymake
+application.  If we just kept JSLint running, wouldn't that be a lot
+faster?
+
+Then I caught a talk on the node.js[2] server, and saw a way.
+
+In my environment, this cuts jslint invocation time in half.
+
+This project also depends on the Express framework[3].
+
+
+
+1: http://www.emacswiki.org/emacs/FlymakeJavaScript
+2: http://nodejs.org/
+3: http://wiki.github.com/visionmedia/express/

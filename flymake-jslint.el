@@ -12,6 +12,8 @@
 (require 'flymake)
 
 (setq flymake-jslint-url "http://127.0.0.1:3003/jslint")
+(setq lintnode-node-program "/home/kevint/opt/nodejs/bin/node")
+(setq lintnode-lintnode-location "/home/kevint/src/lintnode")
 
 (defun flymake-jslint-init ()
   (let* ((temp-file (flymake-init-create-temp-buffer-copy
@@ -24,6 +26,10 @@
                        ;; FIXME: For some reason squid hates this curl invocation.
                        "--proxy" ""
                        flymake-jslint-url))))
+
+(defun lintnode-start ()
+  (start-process "lintnode-server" "*lintnode*"
+                 lintnode-node-program (concat lintnode-lintnode-location "/app.js")))
 
 (setq flymake-allowed-file-name-masks
       (cons '(".+\\.js$"

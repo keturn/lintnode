@@ -29,6 +29,8 @@ configure(function () {
     enable('show exceptions');
 });
 
+var jslint_port = 3003;
+
 /* copied from jslint's rhino.js */
 var jslint_options = {
     bitwise: true,
@@ -129,4 +131,4 @@ post('/example/ok', function () {
 });
 
 
-run();
+run(jslint_port);

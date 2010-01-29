@@ -9,8 +9,7 @@
 
    If you use source="@${1}" instead, curl does it like a file upload.
    That includes a filename, which is nice, but has express make a
-   temp file for the upload.  Also, my POST handler doesn't know how
-   to send a deferred response.
+   temp file for the upload.
 */
 
 /*global require */
@@ -92,11 +91,18 @@ post('/jslint', function handleLintPost() {
         }
         return results;
     }
-        
+
     if (source.tempfile) {
-        // XXX - THIS BRANCH DOESN'T WORK
-        debug("reading source from " + source.tempfile + '\n');
-        return posix.cat(source.tempfile).addCallback(doLint).addCallback(request.respond);
+        // FIXME: It's pretty silly that we have express write the upload to
+        // a tempfile only to read the entire thing back into memory
+        // again.
+        return posix.cat(source.tempfile).addCallback(
+            function (sourcedata) {
+                var results;
+                results = doLint(sourcedata);
+                request.halt(200, results);
+                posix.unlink(source.tempfile);
+            });
     } else {
         // debug("handling source directly from postdata");
         return doLint(source);

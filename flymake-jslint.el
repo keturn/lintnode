@@ -1,13 +1,18 @@
-;; from http://www.emacswiki.org/emacs/FlymakeJavaScript
+;; adapted from http://www.emacswiki.org/emacs/FlymakeJavaScript
 ;;
 ;; Installation:
 ;;
-;; Put this in your load-path, then add the following to your .emacs:
+;; Put this in your load-path, then add the following to your .emacs.
+;; You substitude espresso-mode-hook for javascript-mode-hook if you
+;; use espresso.
 ;;
 ;;     (require 'flymake-jslint)
 ;;     (add-hook 'javascript-mode-hook
 ;;         (lambda () (flymake-mode t)))
 ;;
+;; Do M-x customize-group flymake-jslint to customize paths and port.
+;;
+;; Run M-x lintnode-start once to start the server before invoking flymake.
 
 (require 'flymake)
 
@@ -31,7 +36,8 @@
 Uses `lintnode-node-program' and `lintnode-location'."
   (interactive)
   (start-process "lintnode-server" "*lintnode*"
-                 lintnode-node-program (concat lintnode-location "/app.js")))
+                 lintnode-node-program (concat lintnode-location "/app.js")
+                 "--port" (number-to-string lintnode-port)))
 
 (defun flymake-jslint-init ()
   (let* ((temp-file (flymake-init-create-temp-buffer-copy

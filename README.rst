@@ -38,6 +38,14 @@ with `JSLint's Rhino version`__.
 .. __: http://www.jslint.com/rhino/
 
 
+Emacs Usage
+-----------
+
+See the included `flymake-jslint.el`__.
+
+.. __: flymake-jslint.el
+
+
 Configuration
 -------------
 

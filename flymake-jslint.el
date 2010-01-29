@@ -11,13 +11,19 @@
 
 (require 'flymake)
 
+(setq flymake-jslint-url "http://127.0.0.1:3003/jslint")
+
 (defun flymake-jslint-init ()
   (let* ((temp-file (flymake-init-create-temp-buffer-copy
 		     'flymake-create-temp-inplace))
          (local-file (file-relative-name
 		      temp-file
 		      (file-name-directory buffer-file-name))))
-    (list "jslint.curl" (list local-file))))
+    (list "curl" (list "--form" (format "source=<%s" local-file)
+                       "--form" (format "filename=%s" local-file)
+                       ;; FIXME: For some reason squid hates this curl invocation.
+                       "--proxy" ""
+                       flymake-jslint-url))))
 
 (setq flymake-allowed-file-name-masks
       (cons '(".+\\.js$"

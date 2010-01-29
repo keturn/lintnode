@@ -1,17 +1,67 @@
 lintnode - a JSLint server for more expedient linting
+=====================================================
 
-I was setting up flymake-mode[1] with JSLint[2], and thinking it was
+I was setting up `flymake-mode`_ with JSLint_, and thinking it was
 pretty great, but that rhino start-up cost is pretty big for a flymake
 application.  If we just kept JSLint running, wouldn't that be a lot
 faster?
 
-Then I caught a talk on the node.js[3] server, and saw a way.
+Then I caught a talk on the `node.js`_ server, and saw a way.
 
 In my environment, this cuts jslint invocation time in half.
 
-This project also depends on the Express framework[4].
+This project also depends on the Express_ framework.
 
-1: http://www.emacswiki.org/emacs/FlymakeJavaScript
-2: http://www.jslint.com/
-3: http://nodejs.org/
-4: http://wiki.github.com/visionmedia/express/
+The ``jslint.curl`` script depends on curl, but you can easily
+reproduce it with any other http client.
+
+.. _flymake-mode: http://www.emacswiki.org/emacs/FlymakeJavaScript
+.. _JSLint: http://www.jslint.com/
+.. _node.js: http://nodejs.org/
+.. _Express: http://wiki.github.com/visionmedia/express/
+
+
+Usage
+-----
+
+::
+
+  $ node lintnode/app.js &
+  Express started at http://localhost:3000/ in development mode
+
+  $ lintnode/jslint.curl myfilthycode.js
+
+The exit code of ``jslint.curl`` is currently not nearly as relevant
+as the output on standard out.  The output should be fully compatible
+with `JSLint's Rhino version`__.
+
+.. __: http://www.jslint.com/rhino/
+
+
+Configuration
+-------------
+
+Currently the only configuration mechanism is editing ``app.js``.  Two
+variables may be of interest, `jslint_port` and `jslint_options`.  If
+you change `jslint_port`, be sure to change it in your client
+(e.g. ``jslint.curl``).  For documentation on the `jslint_options`, see
+`fulljslint.js`.
+
+
+Support
+-------
+
+This project is hosted at github, which has a wiki and an issue tracker:
+
+  http://github.com/keturn/lintnode
+
+
+License
+-------
+
+This software is distributed under the same license__ as JSLint, which
+looks like the MIT License with one additional clause:
+
+  The Software shall be used for Good, not Evil.
+
+.. __: LICENSE

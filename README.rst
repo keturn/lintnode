@@ -26,8 +26,8 @@ Usage
 
 ::
 
-  $ node lintnode/app.js &
-  Express started at http://localhost:3000/ in development mode
+  $ node lintnode/app.js --port 3003 &
+  Express started at http://localhost:3003/ in development mode
 
   $ lintnode/jslint.curl myfilthycode.js
 
@@ -41,11 +41,14 @@ with `JSLint's Rhino version`__.
 Configuration
 -------------
 
-Currently the only configuration mechanism is editing ``app.js``.  Two
-variables may be of interest, `jslint_port` and `jslint_options`.  If
-you change `jslint_port`, be sure to change it in your client
-(e.g. ``jslint.curl``).  For documentation on the `jslint_options`, see
-`fulljslint.js`.
+`jslint_port` may be passed on the node command line with the
+``--port`` parameter.  It defaults to 3003.
+
+`jstlint_options` is currently only configurable by editing
+``app.js``.  For documentation on JSLint's options, see `JSLint
+options`_.
+
+.. _JSLint options: http://www.jslint.com/lint.html#options
 
 
 Support

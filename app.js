@@ -14,7 +14,7 @@
 
 /*global require */
 /*global $, configure, use, set, enable, dirname, get, post, run */
-/*global inspect, debug */
+/*global inspect, debug, process */
 require.paths.unshift('lib');
 require('express');
 require('express/plugins'); /*global ContentLength, CommonLogger */
@@ -130,5 +130,14 @@ post('/example/ok', function () {
     return "jslint: No problems found in example.js\n";
 });
 
+
+function parseCommandLine() {
+    var port_index = process.ARGV.indexOf('--port');
+    if (port_index > -1) {
+        jslint_port = process.ARGV[port_index + 1];
+    }
+}
+
+parseCommandLine();
 
 run(jslint_port);

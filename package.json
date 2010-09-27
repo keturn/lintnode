@@ -1,6 +1,6 @@
 {
     "name": "lintnode",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "A JSLint server for more expedient linting.",
     "homepage": "http://github.com/keturn/lintnode",
     "author": {

@@ -1,0 +1,16 @@
+{
+    "name": "lintnode",
+    "version": "0.1.0",
+    "description": "A JSLint server for more expedient linting.",
+    "homepage": "http://github.com/keturn/lintnode",
+    "author": {
+        "name": "Kevin Turner",
+        "url": "http://keturn.net/"
+    },
+    "dependencies": {
+        "express": ">=1.0.0rc3 <2.0",
+        "haml": ">=0.2",
+        "connect-form": ">= 0.1.2"
+    },
+    "engines": ["node >= 0.2.0"]
+}

@@ -10,7 +10,9 @@ Then I caught a talk on the `node.js`_ server, and saw a way.
 
 In my environment, this cuts jslint invocation time in half.
 
-This project also depends on the Express_ framework.
+This project also depends on the Express_ framework, with the connect-form
+and haml packages.  I recommend installation with npm_ to manage these
+dependencies.
 
 The ``jslint.curl`` script depends on curl, but you can easily
 reproduce it with any other http client.
@@ -18,7 +20,8 @@ reproduce it with any other http client.
 .. _flymake-mode: http://www.emacswiki.org/emacs/FlymakeJavaScript
 .. _JSLint: http://www.jslint.com/
 .. _node.js: http://nodejs.org/
-.. _Express: http://wiki.github.com/visionmedia/express/
+.. _Express: http://expressjs.com/
+.. _npm: http://npmjs.org/
 
 
 Usage

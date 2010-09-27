@@ -2,9 +2,9 @@
 
    Takes roughly half the time to jslint something with this than to
    start up a new rhino instance on every invocation.
-   
+
    Invoke from bash script like:
-   
+
      curl --form source="<${1}" ${JSLINT_URL}
 
    If you use source="@${1}" instead, curl does it like a file upload.
@@ -12,21 +12,18 @@
    temp file for the upload.
 */
 
-/*global require */
-/*global $, configure, use, set, enable, dirname, get, post, run */
-/*global inspect, debug, process */
-require.paths.unshift('lib');
-require('express');
-require('express/plugins'); /*global ContentLength, CommonLogger */
-var posix = require('posix');
+/*global process, require */
+var express = require("express");
 var JSLINT = require('./fulljslint');
+var fs = require('fs');
 
-configure(function () {
-    use(ContentLength);
-    use(CommonLogger);
-    set('root', dirname(__filename));
-    enable('cache view contents');
-    enable('show exceptions');
+var app = express.createServer();
+
+app.configure(function () {
+    app.use(require('connect-form')({keepExtensions: true}));
+    app.use(express.errorHandler(
+        { dumpExceptions: true, showStack: true }));
+    app.use(express.bodyDecoder());
 });
 
 var jslint_port = 3003;
@@ -67,67 +64,67 @@ var outputErrors = function (errors) {
     return output.join('');
 };
 
-get('/', function () {
-    this.render('upload.haml.html');
+app.get('/', function (req, res) {
+    res.render('upload.haml');
 });
 
-post('/jslint', function handleLintPost() {
-    var request = this, source, filename;
-    source = request.param('source');
-    // debug("/jslint handler triggered, source is");
-    // debug(inspect(source));
-    request.contentType('text');
+app.post('/jslint', function (request, res) {
+    var filename;
+    if (! request.form) {
+        throw new TypeError("form data required");
+    }
+    return request.form.complete(function (err, fields, files) {
+        var headers = {'Content-Type': 'text/plain'};
 
-    filename = request.param('filename') || source.filename;
-    
-    function doLint(sourcedata) {
-        var passed, results;
-        // debug("sourcedata is " + sourcedata);
-        passed = JSLINT.JSLINT(sourcedata, jslint_options);
-        if (passed) {
-            // debug("no errors\n");
-            results = "jslint: No problems found in " + filename + "\n";
-        } else {
-            results = outputErrors(JSLINT.JSLINT.errors);
-            // debug("results are" + results);
+        function doLint(sourcedata) {
+            var passed, results;
+            passed = JSLINT.JSLINT(sourcedata, jslint_options);
+            if (passed) {
+                // debug("no errors\n");
+                results = "jslint: No problems found in " + filename + "\n";
+            } else {
+                results = outputErrors(JSLINT.JSLINT.errors);
+                // debug("results are" + results);
+            }
+            return results;
         }
-        return results;
-    }
 
-    if (source.tempfile) {
-        // FIXME: It's pretty silly that we have express write the upload to
-        // a tempfile only to read the entire thing back into memory
-        // again.
-        return posix.cat(source.tempfile).addCallback(
-            function (sourcedata) {
-                var results;
-                results = doLint(sourcedata);
-                request.halt(200, results);
-                posix.unlink(source.tempfile);
-            });
-    } else {
-        // debug("handling source directly from postdata");
-        return doLint(source);
-    }
+        if (files.source) {
+            // FIXME: It's pretty silly that we have express write the upload to
+            // a tempfile only to read the entire thing back into memory
+            // again.
+            filename = files.source.filename;
+            fs.readFile(files.source.path, 'utf8',
+                function (err, sourcedata) {
+                    var results;
+                    results = doLint(sourcedata);
+                    res.send(results, headers, 200);
+                    fs.unlink(files.source.path);
+                });
+        } else {
+            filename = fields.filename;
+            res.send(doLint(fields.source), headers, 200);
+        }
+    });
 });
 
 
 /* This action always return some JSLint problems. */
-var exampleFunc = function () {
-    this.contentType('text');
+var exampleFunc = function (req, res) {
     JSLINT.JSLINT("a = function(){ return 7 + x }()",
-           jslint_options);
-    return outputErrors(JSLINT.errors);
+        jslint_options);
+    res.send(outputErrors(JSLINT.JSLINT.errors),
+        {'Content-Type': 'text/plain'});
 };
 
-get('/example/errors', exampleFunc);
-post('/example/errors', exampleFunc);
+app.get('/example/errors', exampleFunc);
+app.post('/example/errors', exampleFunc);
 
 
 /* This action always returns JSLint's a-okay message. */
-post('/example/ok', function () {
-    this.contentType('text');
-    return "jslint: No problems found in example.js\n";
+app.post('/example/ok', function (req, res) {
+    res.send("jslint: No problems found in example.js\n",
+        {'Content-Type': 'text/plain'});
 });
 
 
@@ -140,4 +137,4 @@ function parseCommandLine() {
 
 parseCommandLine();
 
-run(jslint_port);
+app.listen(jslint_port);

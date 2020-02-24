@@ -8,7 +8,7 @@
         "url": "http://keturn.net/"
     },
     "dependencies": {
-        "express": ">=1.0.0rc3 <2.0.0",
+        "express": ">=1.0.0rc3 <5.0.0",
         "haml": ">=0.2.0",
         "connect-form": ">= 0.1.2"
     },
